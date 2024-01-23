@@ -16,7 +16,7 @@ class RoundSeekerAlbumArt extends StatelessWidget {
         return Stack(
           alignment: Alignment.center,
           children: [
-            const AudioSeeker(),
+            AudioSeeker(),
             ClipOval(
               child: Container(
                 width: 240.0,

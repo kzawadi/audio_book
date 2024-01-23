@@ -130,13 +130,7 @@ class MyAudioHandler extends BaseAudioHandler {
   }
 
   UriAudioSource _createAudioSource(MediaItem mediaItem) {
-    return
-
-        // AudioSource.uri(
-        //   Uri.parse(mediaItem.extras!['url'] as String),
-        //   tag: mediaItem,
-        // );
-        AudioSource.asset(
+    return AudioSource.asset(
       mediaItem.extras!['url'] as String,
     );
   }
