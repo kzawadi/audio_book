@@ -17,8 +17,6 @@ dependencies:
   just_audio: ^0.9.36
   audio_service: ^0.18.12
   get_it: ^7.6.7
-  audio_video_progress_bar: ^2.0.1
-  percent_indicator: ^4.2.3
 
 dev_dependencies:
   flutter_test:
