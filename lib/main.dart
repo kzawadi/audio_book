@@ -120,15 +120,24 @@ class AudioProgressBar extends StatelessWidget {
     return ValueListenableBuilder<ProgressBarState>(
       valueListenable: pageManager.progressNotifier,
       builder: (_, value, __) {
-        return ProgressBar(
-          progress: value.current,
-          buffered: value.buffered,
-          total: value.total,
-          onSeek: pageManager.seek,
+        return Row(
+          children: [
+            Text(formatDuration(value.current.inSeconds)),
+            const Text("-"),
+            Text(formatDuration(value.total.inSeconds)),
+          ],
         );
       },
     );
   }
+}
+
+String formatDuration(int seconds) {
+  Duration duration = Duration(seconds: seconds);
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
+  String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+  String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+  return '${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds';
 }
 
 class AudioControlButtons extends StatelessWidget {
@@ -139,11 +148,22 @@ class AudioControlButtons extends StatelessWidget {
       height: 180,
       child: Column(
         children: [
-          CurrentSongTitle(),
+          CurrentPodcastTitle(),
+          Padding(
+            padding: EdgeInsets.only(top: 8, bottom: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CurrentChapterTitle(),
+                AudioProgressBar(),
+                // Text("0:32 - 4:18"),
+              ],
+            ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              PreviousSongButton(),
+              PreviousPodcastButton(),
               PlayButton(),
               NextSongButton(),
             ],
@@ -154,8 +174,28 @@ class AudioControlButtons extends StatelessWidget {
   }
 }
 
-class CurrentSongTitle extends StatelessWidget {
-  const CurrentSongTitle({Key? key}) : super(key: key);
+class CurrentChapterTitle extends StatelessWidget {
+  const CurrentChapterTitle({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final pageManager = getIt<PageManager>();
+    return ValueListenableBuilder<String>(
+      valueListenable: pageManager.currentSongTitleNotifier,
+      builder: (_, title, __) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Text(
+            title,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class CurrentPodcastTitle extends StatelessWidget {
+  const CurrentPodcastTitle({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -174,8 +214,8 @@ class CurrentSongTitle extends StatelessWidget {
   }
 }
 
-class PreviousSongButton extends StatelessWidget {
-  const PreviousSongButton({Key? key}) : super(key: key);
+class PreviousPodcastButton extends StatelessWidget {
+  const PreviousPodcastButton({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final pageManager = getIt<PageManager>();
