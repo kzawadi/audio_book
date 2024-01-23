@@ -160,17 +160,7 @@ class PageManager {
     }
   }
 
-  // Future<void> add() async {
-  //   final songRepository = getIt<PlaylistRepository>();
-  //   final song = await songRepository.fetchAnotherSong();
-  //   final mediaItem = MediaItem(
-  //     id: song['id'] ?? '',
-  //     album: song['album'] ?? '',
-  //     title: song['title'] ?? '',
-  //     extras: {'url': song['url']},
-  //   );
-  //   _audioHandler.addQueueItem(mediaItem);
-  // }
+  Future<void> add() async {}
 
   void remove() {
     final lastIndex = _audioHandler.queue.value.length - 1;

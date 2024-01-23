@@ -22,6 +22,7 @@ class MyAudioHandler extends BaseAudioHandler {
     _notifyAudioHandlerAboutPlaybackEvents();
     _listenForDurationChanges();
     _listenForCurrentSongIndexChanges();
+    // _listenForSequenceStateChanges();
   }
 
   Future<void> _loadEmptyPlaylist() async {
@@ -30,6 +31,15 @@ class MyAudioHandler extends BaseAudioHandler {
     } catch (e) {
       print("Error: $e");
     }
+  }
+
+  void _listenForSequenceStateChanges() {
+    _player.sequenceStateStream.listen((SequenceState? sequenceState) {
+      final sequence = sequenceState?.effectiveSequence;
+      if (sequence == null || sequence.isEmpty) return;
+      final items = sequence.map((source) => source.tag as MediaItem);
+      queue.add(items.toList());
+    });
   }
 
   void _notifyAudioHandlerAboutPlaybackEvents() {
