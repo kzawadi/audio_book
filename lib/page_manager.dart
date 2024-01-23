@@ -36,7 +36,6 @@ class PageManager {
     final mediaItems = playlist
         .map((song) => MediaItem(
               id: song.podcastUri ?? '',
-              // album: song. ?? '',
               title: song.title ?? '',
               extras: {'url': song.podcastUri},
             ))

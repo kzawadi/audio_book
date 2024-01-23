@@ -41,6 +41,7 @@ class _MyAppState extends State<MyApp> {
           padding: EdgeInsets.all(20.0),
           child: Column(
             children: [
+              SizedBox(height: 25),
               RoundSeekerAlbumArt(), // CurrentSongTitle(),
               Playlist(),
               // AudioProgressBar(),
@@ -80,6 +81,7 @@ class RoundSeekerAlbumArt extends StatelessWidget {
                 ),
               ),
             ),
+            const AudioSeeker(),
           ],
         );
       },
@@ -132,12 +134,26 @@ class AudioProgressBar extends StatelessWidget {
   }
 }
 
+class AudioSeeker extends StatelessWidget {
+  const AudioSeeker({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final pageManager = getIt<PageManager>();
+    return ValueListenableBuilder<ProgressBarState>(
+      valueListenable: pageManager.progressNotifier,
+      builder: (_, value, __) {
+        return SongSeeker(duration: value.current);
+      },
+    );
+  }
+}
+
 String formatDuration(int seconds) {
   Duration duration = Duration(seconds: seconds);
   String twoDigits(int n) => n.toString().padLeft(2, '0');
   String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
   String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-  return '${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds';
+  return '$twoDigitMinutes:$twoDigitSeconds';
 }
 
 class AudioControlButtons extends StatelessWidget {
@@ -145,7 +161,8 @@ class AudioControlButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const SizedBox(
-      height: 180,
+      height: 210,
+      width: 210,
       child: Column(
         children: [
           CurrentPodcastTitle(),
@@ -330,5 +347,60 @@ class ChapterItem extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class SongSeeker extends StatefulWidget {
+  final Duration duration;
+
+  const SongSeeker({Key? key, required this.duration}) : super(key: key);
+
+  @override
+  _SongSeekerState createState() => _SongSeekerState();
+}
+
+class _SongSeekerState extends State<SongSeeker>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late double _progress;
+
+  @override
+  void initState() {
+    super.initState();
+    _progress = 0.0;
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: widget.duration,
+    );
+
+    // Start the animation when the widget is created
+    _animationController.forward();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder(
+      tween: Tween<double>(begin: 0.0, end: 1.0),
+      duration: widget.duration,
+      builder: (context, double value, child) {
+        return SizedBox(
+          height: 210,
+          width: 210,
+          child: CircularProgressIndicator(
+            value: value,
+            backgroundColor: Colors.grey,
+            valueColor: const AlwaysStoppedAnimation<Color>(Colors.purple),
+            strokeWidth: 8.0,
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 }
