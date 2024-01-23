@@ -67,21 +67,18 @@ class RoundSeekerAlbumArt extends StatelessWidget {
         return Stack(
           alignment: Alignment.bottomCenter,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0),
-              child: ClipOval(
-                child: Container(
-                  width: 200.0,
-                  height: 200.0,
-                  color: Colors.black,
-                  child: Image.asset(
-                    'assets/images/demo_audiobook_cover_art.png',
-                    fit: BoxFit.cover,
-                  ),
+            const AudioSeeker(),
+            ClipOval(
+              child: Container(
+                width: 200.0,
+                height: 200.0,
+                color: Colors.black,
+                child: Image.asset(
+                  'assets/images/demo_audiobook_cover_art.png',
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
-            const AudioSeeker(),
           ],
         );
       },
