@@ -53,26 +53,6 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class CurrentSongTitle extends StatelessWidget {
-  const CurrentSongTitle({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final pageManager = getIt<PageManager>();
-    return ValueListenableBuilder<String>(
-      valueListenable: pageManager.currentSongTitleNotifier,
-      builder: (_, title, __) {
-        return Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              title,
-              style: const TextStyle(fontSize: 30),
-            ));
-      },
-    );
-  }
-}
-
 class RoundSeekerAlbumArt extends StatelessWidget {
   const RoundSeekerAlbumArt({Key? key}) : super(key: key);
 
@@ -174,30 +154,21 @@ class AudioControlButtons extends StatelessWidget {
   }
 }
 
-class RepeatButton extends StatelessWidget {
-  const RepeatButton({Key? key}) : super(key: key);
+class CurrentSongTitle extends StatelessWidget {
+  const CurrentSongTitle({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final pageManager = getIt<PageManager>();
-    return ValueListenableBuilder<RepeatState>(
-      valueListenable: pageManager.repeatButtonNotifier,
-      builder: (context, value, child) {
-        Icon icon;
-        switch (value) {
-          case RepeatState.off:
-            icon = const Icon(Icons.repeat, color: Colors.grey);
-            break;
-          case RepeatState.repeatSong:
-            icon = const Icon(Icons.repeat_one);
-            break;
-          case RepeatState.repeatPlaylist:
-            icon = const Icon(Icons.repeat);
-            break;
-        }
-        return IconButton(
-          icon: icon,
-          onPressed: pageManager.repeat,
-        );
+    return ValueListenableBuilder<String>(
+      valueListenable: pageManager.currentSongTitleNotifier,
+      builder: (_, title, __) {
+        return Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              title,
+              style: const TextStyle(fontSize: 30),
+            ));
       },
     );
   }
@@ -212,7 +183,10 @@ class PreviousSongButton extends StatelessWidget {
       valueListenable: pageManager.isFirstSongNotifier,
       builder: (_, isFirst, __) {
         return IconButton(
-          icon: const Icon(Icons.skip_previous),
+          icon: const Icon(
+            Icons.skip_previous,
+            size: 50,
+          ),
           onPressed: (isFirst) ? null : pageManager.previous,
         );
       },
@@ -238,14 +212,22 @@ class PlayButton extends StatelessWidget {
             );
           case ButtonState.paused:
             return IconButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.purple),
+                iconColor: MaterialStateProperty.all(Colors.black),
+              ),
               icon: const Icon(Icons.play_arrow),
-              iconSize: 32.0,
+              iconSize: 55.0,
               onPressed: pageManager.play,
             );
           case ButtonState.playing:
             return IconButton(
               icon: const Icon(Icons.pause),
-              iconSize: 32.0,
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.purple),
+                iconColor: MaterialStateProperty.all(Colors.black),
+              ),
+              iconSize: 55.0,
               onPressed: pageManager.pause,
             );
         }
@@ -263,27 +245,8 @@ class NextSongButton extends StatelessWidget {
       valueListenable: pageManager.isLastSongNotifier,
       builder: (_, isLast, __) {
         return IconButton(
-          icon: const Icon(Icons.skip_next),
+          icon: const Icon(Icons.skip_next, size: 50),
           onPressed: (isLast) ? null : pageManager.next,
-        );
-      },
-    );
-  }
-}
-
-class ShuffleButton extends StatelessWidget {
-  const ShuffleButton({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    final pageManager = getIt<PageManager>();
-    return ValueListenableBuilder<bool>(
-      valueListenable: pageManager.isShuffleModeEnabledNotifier,
-      builder: (context, isEnabled, child) {
-        return IconButton(
-          icon: (isEnabled)
-              ? const Icon(Icons.shuffle)
-              : const Icon(Icons.shuffle, color: Colors.grey),
-          onPressed: pageManager.shuffle,
         );
       },
     );
